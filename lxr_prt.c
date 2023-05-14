@@ -74,7 +74,7 @@ struct token *token_create(struct token *_token) // create a token (copy to tmp_
     return &tmp_token;
 }
 
-static struct token *lexer_last_token() // return us the last token we pushed to the lexa 
+static struct token *lexer_last_token() // return us the last token we pushed to the lexa vec
 {
     return vector_back_or_null(lex_process->token_vec);
 }
@@ -135,13 +135,13 @@ struct token *token_make_number_for_value(unsigned long number)  // the function
 
 struct token *token_make_number() // return us a number token 
 {
-    return token_make_number_for_value(read_number()); 
+    return token_make_number_for_value(read_number()); //read_number will return a numrical number
 }
 
 static struct token *token_make_string(char start_delim, char end_delim) // make a string token 
 {
     struct buffer *buf = buffer_create(); // buffer to hold the strimg 
-    assert(nextc() == start_delim); // if its not start with "
+    assert(nextc() == start_delim); // if its not start with start_delim
     char c = nextc();
     for (; c != end_delim && c != EOF; c = nextc())
     {
@@ -411,7 +411,7 @@ struct token *handle_comment() // the function of handling a comment
             return token_make_multiline_comment(); // if its a /**/ 
         }
 
-        pushc('/'); // push it back to the file 
+        pushc('/'); // push it back to the file , we are in a case that its not a comment 
         return token_make_operator_or_string();
     }
 
@@ -486,8 +486,13 @@ char lex_get_escaped_char(char c) // handle the escaped characters
         co = '\'';
         break;
 
-    // we can add here whatever we want ..
+    // we can add here whatever we want .. \a \b \f \r \v ..
 
+    case '\a':
+        co = '\a';
+        break;
+
+    // but its not common , so we dont handle this 
     }
 
     
@@ -575,7 +580,7 @@ struct token *token_make_special_number() // number can be  hexadecimal, binary,
     return token;
 }
 
-struct token *token_make_quote() // creating a quote '' token
+struct token *token_make_quote() // creating a quote '' token like '\n' 
 {
     assert_next_char('\'');
     char c = nextc();
@@ -599,7 +604,7 @@ struct token *read_next_token() // the function that responsible of building the
     token = handle_comment(); // check if its a comment 
     if (token) 
     {
-        return token; // we process the comment 
+        return token; // we return the token of the  comment 
     }
     switch (c)
     {

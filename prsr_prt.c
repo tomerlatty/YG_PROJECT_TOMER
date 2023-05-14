@@ -3,14 +3,22 @@
 #include <assert.h>
 
 
+/*
+|= OR bitwise a = a || FLAG
+|& AND bitwise 
+*/
+
 // global definitions 
 
 static struct compile_process *current_process;
 static struct fixup_system *parser_fixup_sys;
 static struct token *parser_last_token;
 
+// for the building of the tree
 extern struct node *parser_current_body;
 extern struct node *parser_current_function;
+
+// extern keyword is used to declare a variable that alredy defined in another source file and im just tells the compiler that the struct is defined somewhere 
 
 // NODE_TYPE_BLANK
 struct node *parser_blank_node;
@@ -23,9 +31,9 @@ enum
     PARSER_SCOPE_ENTITY_STRUCTURE_SCOPE = 0b00000010,
 };
 
-struct parser_scope_entity
+struct parser_scope_entity // entity yeshoot in hebrew 
 {
-    // the entity flags of the scope entuty
+    // the entity flags of the scope entity
     int flags;
 
     // the stack offset of the scope entity
@@ -62,13 +70,13 @@ enum
 
 struct history_cases
 {
-    // a vector of parsed_switch_case
+    // a vector of cases
     struct vector *cases;
     // is there a default keyword in the switch statement body
     bool has_default_case;
 };
 
-struct history //we want to be able to pass down command througth recursive function and stuff like that
+struct history // a way for us to pass events back up to the function callers 
 {
     int flags;
     struct parser_history_switch
@@ -102,7 +110,7 @@ struct parser_history_switch parser_new_switch_statement(struct history *history
 
 void parser_end_switch_statement(struct parser_history_switch *switch_history)
 {
-    // do nothing.
+    free(switch_history);
 }
 
 void parser_register_case(struct history *history, struct node *case_node) //register a case to the system 
@@ -947,7 +955,7 @@ void make_variable_list_node(struct vector *var_list_vec) // make a list type no
     node_create(&(struct node){.type = NODE_TYPE_VARIABLE_LIST, .var_list.list = var_list_vec});
 }
 
-struct array_brackets *parse_array_brackets(struct history *history) // function to parse an arrat brackets []
+struct array_brackets *parse_array_brackets(struct history *history) // function to parse an array brackets []
 {
     struct array_brackets *brackets = array_brackets_new();
     while (token_next_is_operator("["))

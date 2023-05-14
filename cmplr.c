@@ -59,7 +59,10 @@ int file_compiler(const char* filename, const char* out_filename, int flags) // 
     {
         return COMPILER_FAILED_WITH_ERRORS;
     }
+
+    
     
     return COMPILER_FILE_COMPILED_OK; // if all the steps gone ok 
+
     
 }

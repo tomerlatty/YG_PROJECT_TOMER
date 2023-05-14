@@ -137,7 +137,7 @@ struct lex_process{ // the struct of the lex_process
         ((50))
     */
     int current_expression_count; // how many brackets are there at the moment 
-    struct buffer* parentheses_buffer; // the buffer that hold the data inside the parentheses 
+    struct buffer* parentheses_buffer; // the buffer that hold the data inside the parentheses ()
     struct lex_process_functions* function; // the functions od the lexa
 
     // This will be private data that the lexer does not understand but the person using the lexer does understand
